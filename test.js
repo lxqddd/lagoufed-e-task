@@ -1,13 +1,18 @@
-function map(array, fn) {
-  let results = []
-  for (let index = 0; index < array.length; index++) {
-    results.push(fn(array[index], index, array))
+function once(fn) {
+  let done = false
+  return function () {
+    if (!done) {
+      done = true
+      return fn.apply(this, arguments)
+    }
   }
-  return results
 }
 
-const arr = [1, 2, 3, 4, 5]
-const ret = map(arr, (item, index, array) => {
-  return item + 1
+const pay = once(money => {
+  console.log(`支付了${money}元`)
 })
-console.log(ret)
+pay(5)
+pay(5)
+pay(5)
+pay(5)
+pay(5)
