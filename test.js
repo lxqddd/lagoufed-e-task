@@ -1,18 +1,19 @@
-function once(fn) {
-  let done = false
+function memoize(fn) {
+  const cache = {}
   return function () {
-    if (!done) {
-      done = true
-      return fn.apply(this, arguments)
-    }
+    let key = JSON.stringify(arguments)
+    cache[key] = cache[key] || fn.apply(fn, arguments)
+    return cache[key]
   }
 }
 
-const pay = once(money => {
-  console.log(`支付了${money}元`)
-})
-pay(5)
-pay(5)
-pay(5)
-pay(5)
-pay(5)
+let getArea = r => {
+  console.log('hello world')
+  return Math.PI * r * r
+}
+
+let test = memoize(getArea)
+console.log(test(4))
+console.log(test(4))
+console.log(test(4))
+console.log(test(4))
