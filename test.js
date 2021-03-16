@@ -1,19 +1,18 @@
-function memoize(fn) {
-  const cache = {}
-  return function () {
-    let key = JSON.stringify(arguments)
-    cache[key] = cache[key] || fn.apply(fn, arguments)
-    return cache[key]
+/*
+ * @Author       : your name
+ * @Date         : 2021-03-14 22:25:47
+ * @LastEditTime : 2021-03-16 21:44:16
+ * @LastEditors  : Please set LastEditors
+ * @Description  : In User Settings Edit
+ * @FilePath     : \lagoufed-e-task\test.js
+ */
+function checkAge(min) {
+  return function (age) {
+    return age > min
   }
 }
 
-let getArea = r => {
-  console.log('hello world')
-  return Math.PI * r * r
-}
-
-let test = memoize(getArea)
-console.log(test(4))
-console.log(test(4))
-console.log(test(4))
-console.log(test(4))
+const checkAge18 = checkAge(18)
+console.log(checkAge18(22))
+console.log(checkAge18(16))
+console.log(checkAge18(24))
