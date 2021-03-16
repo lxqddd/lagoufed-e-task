@@ -1,18 +1,25 @@
 /*
  * @Author       : your name
  * @Date         : 2021-03-14 22:25:47
- * @LastEditTime : 2021-03-16 21:44:16
+ * @LastEditTime : 2021-03-16 22:35:40
  * @LastEditors  : Please set LastEditors
  * @Description  : In User Settings Edit
  * @FilePath     : \lagoufed-e-task\test.js
  */
-function checkAge(min) {
-  return function (age) {
-    return age > min
+function curry(fn) {
+  console.log(fn.length)
+  return function curryFn(...args) {
+    // args.length: 实参的个数
+    // fn.length: 形参的个数
+    if (args.length < fn.length) {
+      return function () {
+        return curryFn(...args.concat(Array.from(arguments)))
+      }
+    }
+    return fn(...args)
   }
 }
 
-const checkAge18 = checkAge(18)
-console.log(checkAge18(22))
-console.log(checkAge18(16))
-console.log(checkAge18(24))
+const currySum = curry((num1, num2, num3) => num1 + num2 + num3)
+console.log(currySum(1, 2, 3))
+console.log(currySum(1)(2)(3))
