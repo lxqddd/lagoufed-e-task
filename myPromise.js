@@ -1,7 +1,7 @@
 /*
  * @Author       : your name
  * @Date         : 2021-03-27 15:04:35
- * @LastEditTime : 2021-03-29 21:48:22
+ * @LastEditTime : 2021-03-29 22:27:08
  * @LastEditors  : Please set LastEditors
  * @Description  : In User Settings Edit
  * @FilePath     : \lagoufed-e-task\myPromise.js
@@ -98,6 +98,25 @@ class MyPromise {
       }
     })
     return promise
+  }
+
+  finally(callback) {
+    return this.then(
+      value => {
+        return MyPromise.resolve(callback()).then(val => {
+          return val
+        })
+      },
+      reason => {
+        return MyPromise.resolve(callback()).then(() => {
+          throw reason
+        })
+      }
+    )
+  }
+
+  cache(failCallback) {
+    return this.then(undefined, failCallback)
   }
 
   static all(array) {

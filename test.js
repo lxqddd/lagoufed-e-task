@@ -1,7 +1,7 @@
 /*
  * @Author       : your name
  * @Date         : 2021-03-14 22:25:47
- * @LastEditTime : 2021-03-29 21:51:07
+ * @LastEditTime : 2021-03-29 22:23:46
  * @LastEditors  : Please set LastEditors
  * @Description  : In User Settings Edit
  * @FilePath     : \lagoufed-e-task\test.js
@@ -16,11 +16,11 @@ const promise = new MyPromise((resolved, rejected) => {
   // rejected('fail')
 })
 
-// function other() {
-//   return new MyPromise((resolve, reject) => {
-//     resolve('other')
-//   })
-// }
+function other() {
+  return new MyPromise((resolve, reject) => {
+    resolve('other')
+  })
+}
 
 // const p1 = promise.then(value => {
 //   console.log(value)
@@ -60,4 +60,19 @@ const promise = new MyPromise((resolved, rejected) => {
 //   }
 // )
 
-MyPromise.resolve(promise).then(value => console.log(value))
+// MyPromise.resolve(promise).then(value => console.log(value))
+
+function p2() {
+  return new MyPromise((resolve, reject) => {
+    resolve('p2')
+  })
+}
+
+p2()
+  .finally(() => {
+    console.log('hello')
+    return other()
+  })
+  .then(value => {
+    console.log(value)
+  })
