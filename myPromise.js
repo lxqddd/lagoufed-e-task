@@ -1,7 +1,7 @@
 /*
  * @Author       : your name
  * @Date         : 2021-03-27 15:04:35
- * @LastEditTime : 2021-03-28 17:30:30
+ * @LastEditTime : 2021-03-29 21:48:22
  * @LastEditors  : Please set LastEditors
  * @Description  : In User Settings Edit
  * @FilePath     : \lagoufed-e-task\myPromise.js
@@ -49,6 +49,12 @@ class MyPromise {
   }
 
   then(successCallback, failCallback) {
+    successCallback = successCallback ? successCallback : value => value
+    failCallback = failCallback
+      ? failCallback
+      : reason => {
+          throw reason
+        }
     const promise = new MyPromise((resolve, reject) => {
       if (this.status === FULFILLED) {
         setTimeout(() => {
@@ -92,6 +98,43 @@ class MyPromise {
       }
     })
     return promise
+  }
+
+  static all(array) {
+    let result = []
+    let index = 0
+    return new MyPromise((resolve, reject) => {
+      function addData(index, data) {
+        result[index] = data
+        index++
+        if (index === array.length) {
+          resolve(result)
+        }
+      }
+      for (let i = 0; i < array.length; i++) {
+        let current = array[i]
+        if (current instanceof MyPromise) {
+          // 值是promise 对象
+          current.then(
+            value => addData(i, value),
+            reason => reject(reason)
+          )
+        } else {
+          // 值是普通类型
+          addData(i, current)
+        }
+      }
+    })
+  }
+
+  static resolve(value) {
+    if (value instanceof MyPromise) {
+      return value
+    } else {
+      return new MyPromise((resolve, reject) => {
+        resolve(value)
+      })
+    }
   }
 }
 

@@ -1,7 +1,7 @@
 /*
  * @Author       : your name
  * @Date         : 2021-03-14 22:25:47
- * @LastEditTime : 2021-03-28 17:31:59
+ * @LastEditTime : 2021-03-29 21:51:07
  * @LastEditors  : Please set LastEditors
  * @Description  : In User Settings Edit
  * @FilePath     : \lagoufed-e-task\test.js
@@ -16,11 +16,11 @@ const promise = new MyPromise((resolved, rejected) => {
   // rejected('fail')
 })
 
-function other() {
-  return new MyPromise((resolve, reject) => {
-    resolve('other')
-  })
-}
+// function other() {
+//   return new MyPromise((resolve, reject) => {
+//     resolve('other')
+//   })
+// }
 
 // const p1 = promise.then(value => {
 //   console.log(value)
@@ -35,21 +35,22 @@ function other() {
 //   }
 // )
 
-promise
-  .then(value => {
-    console.log(value)
-    // throw new Error('resolve cuowu ')
-    return 100
-  })
-  .then(
-    value => {
-      console.log('hello world')
-      console.log(value)
-    },
-    reason => {
-      console.log(reason)
-    }
-  )
+// promise
+// .then(value => {
+//   console.log(value)
+//   // throw new Error('resolve cuowu ')
+//   return 100
+// })
+// .then()
+// .then(
+//   value => {
+//     console.log('hello world')
+//     console.log(value)
+//   },
+//   reason => {
+//     console.log(reason)
+//   }
+// )
 // promise.then(
 //   value => {
 //     console.log(value)
@@ -58,3 +59,5 @@ promise
 //     console.log(reason)
 //   }
 // )
+
+MyPromise.resolve(promise).then(value => console.log(value))
