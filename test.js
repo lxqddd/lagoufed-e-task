@@ -10,3 +10,16 @@ function test(string, name, age) {
 const str = test`hello ${name}, ${age} years old.`
 
 console.log(str)
+
+const obj = {
+  name: '夜殇',
+  // sayHi: function () {
+  //   console.log(this)  // this指向的是当前对象
+  //   console.log(this.name)
+  // },
+  sayHi: () => {
+    console.log(this)
+    console.log(this.name)
+  }
+}
+obj.sayHi()
