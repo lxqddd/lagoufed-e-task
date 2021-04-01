@@ -1,33 +1,18 @@
+// Reflect 提供了一整套操作对象的方法，让我们操作对象的时候更加规范
 const obj = {
-  name: '夜殇',
+  name: null,
   age: 18
 }
 
-const objProxy = new Proxy(obj, {
-  get(target, prop) {
-    // console.log(target, prop)
-    return target[prop] ? target[prop] : '夜殇最帅'
-  },
-  set(target, prop, newValue) {
-    // console.log(target, prop, newValue)
-    if (prop === 'age') {
-      target[prop] = newValue > 18 ? 18 : newValue
-      return
-    }
-    target[prop] = newValue
-  },
-  deleteProperty(target, prop) {
-    if (prop === 'name') {
-      console.log('你丫敢删我试试！！')
-      return
-    }
-    delete target[prop]
-  }
-})
+// 判断当前对象中是否有要找的属性
+console.log(Reflect.has(obj, 'name'))
 
-console.log(objProxy.name)
-objProxy.age = 17
-console.log(objProxy.age)
-delete objProxy.name
-delete objProxy.age
+// 删除对象上的某个属性
+Reflect.deleteProperty(obj, 'name')
+
+// 获取当前对象的所有键
+console.log(Reflect.ownKeys(obj))
+
+console.log(Reflect.getOwnPropertyDescriptor(obj, 'age'))
+
 console.log(obj)
