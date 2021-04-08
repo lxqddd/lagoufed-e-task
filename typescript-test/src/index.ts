@@ -1,12 +1,6 @@
-const h: string = 'hello'
-
-console.log(h)
-
-const arr: number[] = [1, 3]
-
-function sum(...arg: Array<number>): number {
-  return arg.reduce((prev, cur) => prev + cur, 0)
+function creatArray<T>(length: number, value: T): T[] {
+  const arr = Array<T>(length).fill(value)
+  return arr
 }
 
-console.log(sum(1, 2, 3, 4))
-console.log('hello world')
+console.log(creatArray<string>(2, 'hello world'))
