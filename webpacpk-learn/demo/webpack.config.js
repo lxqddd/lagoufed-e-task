@@ -3,14 +3,31 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const WithoutComments = require('./src/plugins/WithoutComments')
+const { HotModuleReplacementPlugin } = require('webpack')
 
 module.exports = {
   mode: 'development',
   entry: './src/index.js',
   output: {
-    filename: 'bundle.js',
+    filename: '[name]-[contenthash:8].bundle.js',
     path: path.join(__dirname, './dist')
   },
+  devServer: {
+    port: 3000,
+    contentBase: path.join(__dirname, './dist'),
+    publicPath: '/',
+    hot: true,
+    proxy: {
+      '/api': {
+        target: 'https://api.github.com',
+        pathRewrite: {
+          '^/api': ''
+        },
+        changeOrigin: true
+      }
+    }
+  },
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -44,6 +61,7 @@ module.exports = {
       template: path.join(__dirname, 'index.html')
     }),
     new CleanWebpackPlugin(),
-    new WithoutComments()
+    new WithoutComments(),
+    new HotModuleReplacementPlugin()
   ]
 }

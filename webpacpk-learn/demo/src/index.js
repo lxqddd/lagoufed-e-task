@@ -1,2 +1,2 @@
 import './style/index.scss'
-console.log('hello world')
+console.log('hello world123')
