@@ -1,0 +1,15 @@
+{
+  "name": "rollup-learn",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rollup --format iife --input ./src/index.js --file ./dist/bundle.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "rollup": "^2.47.0"
+  }
+}
