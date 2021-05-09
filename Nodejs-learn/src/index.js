@@ -1,8 +1,5 @@
-const foo = require('./foo')
+const fs = require('fs')
 
-// console.log(module)
-// console.log(module.path)
-// console.log(module.filename)
-// console.log(module.parent)
-// console.log(module.children)
-console.log(process.env)
+fs.open('./foo.js', 'r', 0o666, (err, res) => {
+  console.log(res)
+})
