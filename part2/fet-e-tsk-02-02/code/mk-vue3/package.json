@@ -1,5 +1,5 @@
 {
-  "name": "mk-vue3",
+  "name": "mk-vue",
   "version": "1.0.0",
   "description": "使用webpack搭建vue开发环境",
   "main": "index.js",
