@@ -32,10 +32,11 @@ class MyVueRouter {
 	init() {
 		this.createRouteMap()
 		this.initComponents(_Vue)
+		this.initEvent()
 	}
 
 	createRouteMap() {
-		// 解析所有的路由规则，把所有的路由规则解析成键值对的形式，存储到routeMap中
+		// 解析所有的路 由规则，把所有的路由规则解析成键值对的形式，存储到routeMap中
 		if (this.options.routes && this.options.routes.length) {
 			this.options.routes.forEach((item) => {
 				this.routeMap[item.path] = item.component
@@ -57,14 +58,38 @@ class MyVueRouter {
 					{
 						attrs: {
 							href: this.to
+						},
+						on: {
+							click: this.clickHandler
 						}
 					},
 					[this.$slots.default]
 				)
+			},
+			methods: {
+				clickHandler(e) {
+					history.pushState({}, '', this.to)
+					this.$router.data.current = this.to
+					e.preventDefault()
+				}
 			}
 			// template: `<a :href="to">
 			//               <slot></slot>
 			//             </a>`
+		})
+
+		const self = this
+		Vue.component('router-view', {
+			render(h) {
+				const component = self.routeMap[self.data.current]
+				return h(component)
+			}
+		})
+	}
+
+	initEvent() {
+		window.addEventListener('popstate', () => {
+			this.data.current = window.location.pathname
 		})
 	}
 }
