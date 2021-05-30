@@ -3,20 +3,36 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { VueLoaderPlugin } = require('vue-loader/dist/index')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const config = {
   mode: 'development', // 开发模式
+  devtool: 'source-map',
   devServer: {
     contentBase: path.resolve(__dirname, './dist'),
     port: '3000',
     publicPath: '/',
     hot: true
   },
+  optimization: {
+    usedExports: true, // 不导出未使用的模块
+    minimize: true,
+    minimizer: [
+      new CssMinimizerPlugin({
+        minify: CssMinimizerPlugin.cleanCssMinify
+      })
+    ],
+    splitChunks: {
+      chunks: 'all'
+    }
+  },
   entry: path.resolve(__dirname, './src/main.js'), // 打包入口
   output: {
     // 打包完成后输出的输出内容
     path: path.resolve(__dirname, 'dist'),
-    filename: 'js/[name].js'
+    filename: '[name]-[contenthash:8].bundle.js'
   },
   module: {
     rules: [
@@ -48,6 +64,11 @@ const config = {
       }
     ]
   },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src')
+    }
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: './public/index.html',
@@ -56,7 +77,17 @@ const config = {
     }),
     new VueLoaderPlugin(),
     new MiniCssExtractPlugin(),
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
+    new BundleAnalyzerPlugin(),
+    new CssMinimizerPlugin(),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: './public/*',
+          to: path.resolve(__dirname, './dist')
+        }
+      ]
+    })
   ]
 }
 
