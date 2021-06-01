@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vue</title>
+  </head>
+  <body>
+    <div id="app">
+      <h1>插值表达式</h1>
+      <h3>{{ message.content }}</h3>
+      <h3>{{ age }}</h3>
+      <h1>v-text</h1>
+      <div v-text="message.content"></div>
+      <h1>v-model</h1>
+      <input type="text" v-model="message.content" />
+      <input type="text" v-model="age" />
+    </div>
+    <script src="./compiler.js"></script>
+    <script src="./observer.js"></script>
+    <script src="./vue.js"></script>
+    <script>
+      const vm = new Vue({
+        el: '#app',
+        data: {
+          name: '夜殇',
+          age: 18,
+          message: {
+            content: 'hello world'
+          }
+        }
+      })
+      console.log(vm)
+    </script>
+  </body>
+</html>
