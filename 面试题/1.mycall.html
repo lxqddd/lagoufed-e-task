@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      Function.prototype.mycall = function (context, ...args) {
+        context = context ?? window
+        context.fn = this
+        const res = context.fn(...args)
+        delete context.fn
+        return res
+      }
+      function fn1() {
+        console.log(1)
+      }
+      function fn2() {
+        console.log(2)
+      }
+      fn1.mycall(fn2)
+      fn1.mycall.mycall(fn2)
+    </script>
+  </body>
+</html>
