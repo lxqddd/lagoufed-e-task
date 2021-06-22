@@ -33,6 +33,7 @@ class MyVueRouter {
 	init() {
 		this.createRouterMap()
 		this.createComponent(_Vue)
+		this.initEvent()
 	}
 
 	createRouterMap() {
@@ -59,11 +60,36 @@ class MyVueRouter {
 					{
 						attrs: {
 							href: this.to
+						},
+						on: {
+							click: this.handleClick
 						}
 					},
 					[this.$slots.default]
 				)
+			},
+			methods: {
+				handleClick(e) {
+					history.pushState({}, '', this.to)
+					this.$router.curRouter.current = this.to
+					e.preventDefault()
+				}
 			}
+		})
+
+		const self = this
+		Vue.component('router-view', {
+			render(h) {
+				const component = self.routerMap[self.curRouter.current]
+				return h(component)
+			}
+		})
+	}
+
+	initEvent() {
+		// 当浏览器url发生变化的时候触发
+		window.addEventListener('popstate', () => {
+			this.curRouter.current = window.location.pathname
 		})
 	}
 }
