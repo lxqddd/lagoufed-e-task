@@ -25,7 +25,7 @@ class MyVueRouter {
 	constructor(options) {
 		this.options = options
 		this.routerMap = {}
-		this.curRouter = _Vue.observable({
+		this.data = _Vue.observable({
 			current: '/'
 		})
 	}
@@ -59,7 +59,7 @@ class MyVueRouter {
 					'a',
 					{
 						attrs: {
-							href: this.to
+							href: '#' + this.to
 						},
 						on: {
 							click: this.handleClick
@@ -70,8 +70,8 @@ class MyVueRouter {
 			},
 			methods: {
 				handleClick(e) {
-					history.pushState({}, '', this.to)
-					this.$router.curRouter.current = this.to
+					window.location.hash = '#' + this.to
+					this.$router.data.current = this.to
 					e.preventDefault()
 				}
 			}
@@ -80,7 +80,7 @@ class MyVueRouter {
 		const self = this
 		Vue.component('router-view', {
 			render(h) {
-				const component = self.routerMap[self.curRouter.current]
+				const component = self.routerMap[self.data.current]
 				return h(component)
 			}
 		})
@@ -88,9 +88,15 @@ class MyVueRouter {
 
 	initEvent() {
 		// 当浏览器url发生变化的时候触发
-		window.addEventListener('popstate', () => {
-			this.curRouter.current = window.location.pathname
-		})
+		window.addEventListener('load', this.hashChange.bind(this))
+		window.addEventListener('hashchange', this.hashChange.bind(this))
+	}
+
+	hashChange() {
+		if (!window.location.hash) {
+			window.location.hash = '#/'
+		}
+		this.data.current = window.location.hash.substr(1)
 	}
 }
 
