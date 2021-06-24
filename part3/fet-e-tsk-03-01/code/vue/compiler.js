@@ -96,7 +96,7 @@ class Compiler {
   onUpdater(node, value, key, eventName) {
     console.log(eventName)
     console.log(this.vm[key])
-    node.addEventListener(eventName, this.vm[key].bind(this))
+    node.addEventListener(eventName, this.vm[key].bind(this.vm))
   }
 
   // 判断元素属性是否是指令
