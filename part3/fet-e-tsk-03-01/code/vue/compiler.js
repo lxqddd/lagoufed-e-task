@@ -24,7 +24,39 @@ class Compiler {
 
   // 编译元素节点，处理指令
   compileElement(node) {
-    console.log(node)
+    // console.log(node.attributes)
+    // 遍历所有的属性节点
+    Array.from(node.attributes).forEach(attr => {
+      // 判断是否是指令
+      let attrName = attr.name
+      if (this.isDirection(attrName)) {
+        // console.log(attrName.indexOf(':'))
+        let eventName = ''
+        if (attrName.indexOf(':') >= 0 || attrName.indexOf('@') >= 0) {
+          const colonIndex = attrName.indexOf(':')
+          eventName = attrName.substring(colonIndex + 1)
+        } else {
+          eventName = attrName.substring(2)
+        }
+        let key = attr.value
+        // console.log(eventName)
+        this.update(node, key, attrName, eventName)
+      }
+    })
+  }
+
+  isEvent(attrName) {
+    return attrName.indexOf(':') > -1 || attrName.indexOf('@') > -1
+  }
+
+  update(node, key, attrName, eventName) {
+    let updateFn = null
+    if (this.isEvent(attrName)) {
+      updateFn = this.onUpdater
+    } else {
+      updateFn = this[eventName + 'Updater']
+    }
+    updateFn && updateFn.call(this, node, this.vm[key], key, eventName)
   }
 
   // 编译文本节点，处理插值表达式
@@ -33,7 +65,7 @@ class Compiler {
     const value = node.textContent
     if (reg.test(value)) {
       const key = RegExp.$1.trim()
-      console.log(key)
+      // console.log(key)
       node.textContent = value.replace(reg, this.vm[key])
     }
   }
@@ -42,13 +74,29 @@ class Compiler {
   textUpdater(node, value, key) {
     node.textContent = value
     new Watcher(this.vm, key, newValue => {
+      // console.log(newValue)
       node.textContent = newValue
+    })
+  }
+
+  // v-model
+  modelUpdater(node, value, key) {
+    node.value = value
+    new Watcher(this.vm, key, newValue => {
+      node.value = newValue
+    })
+    // 双向绑定
+    node.addEventListener('input', () => {
+      this.vm[key] = node.value
+      console.log(this.vm[key])
     })
   }
 
   // 处理 v-on 指令
   onUpdater(node, value, key, eventName) {
-    node.addEventListener(eventName, value)
+    console.log(eventName)
+    console.log(this.vm[key])
+    node.addEventListener(eventName, this.vm[key].bind(this))
   }
 
   // 判断元素属性是否是指令

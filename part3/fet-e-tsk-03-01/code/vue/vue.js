@@ -8,6 +8,9 @@ class Vue {
     // 把data中的成员转换成getter和setter，注入到vue实例中
     this._proxyData(this.$data)
 
+    // 将事件监听函数注入到vue实例中
+    this._mapMethods(this.$options.methods || {})
+
     // 调用observer对象，监听数据变化
     new Observer(this.$data)
 
@@ -31,6 +34,13 @@ class Vue {
           data[key] = newValue
         }
       })
+    })
+  }
+  _mapMethods(methods) {
+    const keys = Object.keys(methods)
+
+    keys.forEach(key => {
+      this[key] = methods[key]
     })
   }
 }

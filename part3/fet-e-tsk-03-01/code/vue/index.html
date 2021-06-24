@@ -14,9 +14,12 @@
       <h1>v-text</h1>
       <div v-text="message"></div>
       <h1>v-model</h1>
-      <input type="text" v-model="message.content" />
+      <input type="text" v-model="message" />
       <input type="text" v-model="age" />
+      <button v-on:click="ageAdd">age累加</button>
     </div>
+    <script src="./dep.js"></script>
+    <script src="./watcher.js"></script>
     <script src="./compiler.js"></script>
     <script src="./observer.js"></script>
     <script src="./vue.js"></script>
@@ -27,9 +30,15 @@
           name: '夜殇',
           age: 18,
           message: 'hello world'
+        },
+        methods: {
+          ageAdd() {
+            console.log(this)
+            this.age++
+            console.log(this.age)
+          }
         }
       })
-      console.log(vm)
     </script>
   </body>
 </html>
