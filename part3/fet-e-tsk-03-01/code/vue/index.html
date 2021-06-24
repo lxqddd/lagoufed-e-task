@@ -14,7 +14,7 @@
       <h1>v-text</h1>
       <div v-text="message"></div>
       <h1>v-model</h1>
-      <input type="text" v-model="message" />
+      <input type="text" v-model="message" @change="textChange" />
       <input type="text" v-model="age" />
       <button v-on:click="ageAdd">age累加</button>
     </div>
@@ -36,6 +36,10 @@
             console.log(this)
             this.age++
             console.log(this.age)
+          },
+
+          textChange() {
+            console.log('hello world')
           }
         }
       })

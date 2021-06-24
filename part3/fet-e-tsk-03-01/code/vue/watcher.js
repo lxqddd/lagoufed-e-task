@@ -14,7 +14,7 @@ class Watcher {
   }
   // 当数据发生变化的时候更新视图
   update() {
-    console.log('update')
+    // console.log('update')
     let newValue = this.vm[this.key]
     if (this.oldValue === newValue) {
       return

@@ -32,8 +32,12 @@ class Compiler {
       if (this.isDirection(attrName)) {
         // console.log(attrName.indexOf(':'))
         let eventName = ''
-        if (attrName.indexOf(':') >= 0 || attrName.indexOf('@') >= 0) {
+        // console.log(attrName)
+        if (attrName.indexOf(':') >= 0) {
           const colonIndex = attrName.indexOf(':')
+          eventName = attrName.substring(colonIndex + 1)
+        } else if (attrName.indexOf('@') >= 0) {
+          const colonIndex = attrName.indexOf('@')
           eventName = attrName.substring(colonIndex + 1)
         } else {
           eventName = attrName.substring(2)
@@ -88,7 +92,7 @@ class Compiler {
     // 双向绑定
     node.addEventListener('input', () => {
       this.vm[key] = node.value
-      console.log(this.vm[key])
+      // console.log(this.vm[key])
     })
   }
 
@@ -101,7 +105,7 @@ class Compiler {
 
   // 判断元素属性是否是指令
   isDirection(attrName) {
-    return attrName.startsWith('v-')
+    return attrName.startsWith('v-') || attrName.startsWith('@')
   }
 
   // 判断节点是否是文本节点
