@@ -83,6 +83,14 @@ class Compiler {
     })
   }
 
+  // 处理v-html指令
+  htmlUpdater(node, value, key) {
+    node.innerHTML = value
+    new Watcher(this.vm, key, newValue => {
+      node.innerHTML = newValue
+    })
+  }
+
   // v-model
   modelUpdater(node, value, key) {
     node.value = value
@@ -98,8 +106,8 @@ class Compiler {
 
   // 处理 v-on 指令
   onUpdater(node, value, key, eventName) {
-    console.log(eventName)
-    console.log(this.vm[key])
+    // console.log(eventName)
+    // console.log(this.vm[key])
     node.addEventListener(eventName, this.vm[key].bind(this.vm))
   }
 

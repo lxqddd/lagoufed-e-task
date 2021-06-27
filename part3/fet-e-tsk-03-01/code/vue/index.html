@@ -12,6 +12,7 @@
       <h3>{{ message }}</h3>
       <h3>{{ age }}</h3>
       <h1>v-text</h1>
+      <div v-html="html"></div>
       <div v-text="message"></div>
       <h1>v-model</h1>
       <input type="text" v-model="message" @change="textChange" />
@@ -29,7 +30,8 @@
         data: {
           name: '夜殇',
           age: 18,
-          message: 'hello world'
+          message: 'hello world',
+          html: '<h1>v-html</h1>'
         },
         methods: {
           ageAdd() {
