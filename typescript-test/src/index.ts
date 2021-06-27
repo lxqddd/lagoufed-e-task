@@ -1,22 +1,8 @@
-// function creatArray<T>(length: number, value: T): T[] {
-//   const arr = Array<T>(length).fill(value)
-//   return arr
-// }
+import MyMap from './Map/index'
 
-// console.log(creatArray<string>(2, 'hello world'))
+const myMap = new MyMap()
 
-function task<T>(arr: T[], num: number): T[] {
-  if (arr.length < num) {
-    return arr
-  }
-  const newArr: T[] = []
-  for (let i = 0; i < num; i++) {
-    newArr.push(arr[i])
-  }
-  return newArr
-}
+myMap.set(1, 2)
+const ret: number = myMap.get(1)
 
-const newArr = task<number>([1, 2, 3, 4], 2)
-console.log(newArr)
-
-type callback<T> = (n: T, i: number) => boolean
+console.log(typeof ret)
