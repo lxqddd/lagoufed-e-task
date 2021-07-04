@@ -31,19 +31,41 @@ class MyMap {
   }
 
   // 返回当前map中的所有key值
-  keys() {}
+  keys(): any[] {
+    return this.mapKeys
+  }
 
   // 返回当前map中的所有value值
-  values() {}
+  values(): any[] {
+    return this.mapValues
+  }
 
   // 返回map的长度
-  size() {}
+  size(): number {
+    return this.mapKeys.length
+  }
 
   // 清空当前的map
-  clear() {}
+  clear(): boolean {
+    this.mapKeys = []
+    this.mapValues = []
+    return true
+  }
 
   // 遍历当前的map
-  forEach() {}
+  forEach(callback: (item: any[], index: number, map: any[]) => void) {
+    this.map().forEach((item, index, map) => {
+      callback(item, index, map)
+    })
+  }
+
+  map(): any[] {
+    const map: any[] = []
+    this.mapKeys.forEach((item, index) => {
+      map.push([item, this.mapValues[index]])
+    })
+    return map
+  }
 
   // 判断当前map中是否包含目标键的值
   has<T>(key: T): boolean {
