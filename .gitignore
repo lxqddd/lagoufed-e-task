@@ -4,3 +4,5 @@ node_modules
 /part2/fet-e-tsk-02-01/code/xy-cli/node_modules
 /webpacpk-learn/demo/dist
 /part3/snabbdom-learn/node_modules
+/some-test/cache-test/.cache
+/some-test/cache-test/node_modules
