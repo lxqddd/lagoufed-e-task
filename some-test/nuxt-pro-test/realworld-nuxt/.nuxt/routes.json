@@ -1,0 +1,16 @@
+[
+  {
+    "name": "home",
+    "path": "/",
+    "component": "C:\\\\Users\\\\xiang\\\\Desktop\\\\lagoufed-e-task\\\\some-test\\\\nuxt-pro-test\\\\realworld-nuxt\\\\pages\\\\layout",
+    "children": [
+      {
+        "name": "home",
+        "path": "",
+        "component": "C:\\\\Users\\\\xiang\\\\Desktop\\\\lagoufed-e-task\\\\some-test\\\\nuxt-pro-test\\\\realworld-nuxt\\\\pageS\\\\home",
+        "_name": "_9f9125d2"
+      }
+    ],
+    "_name": "_0eb22582"
+  }
+]
