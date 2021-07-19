@@ -6,6 +6,11 @@ import scrollBehavior from './router.scrollBehavior.js'
 
 const _0eb22582 = () => interopDefault(import('..\\pages\\layout' /* webpackChunkName: "" */))
 const _9f9125d2 = () => interopDefault(import('..\\pageS\\home' /* webpackChunkName: "" */))
+const _53141a11 = () => interopDefault(import('..\\pages\\login' /* webpackChunkName: "" */))
+const _90c6ab5e = () => interopDefault(import('..\\pages\\profile' /* webpackChunkName: "" */))
+const _658e9f0a = () => interopDefault(import('..\\pages\\settings' /* webpackChunkName: "" */))
+const _4cfd4e62 = () => interopDefault(import('..\\pages\\edit' /* webpackChunkName: "" */))
+const _c33224c4 = () => interopDefault(import('..\\pages\\article' /* webpackChunkName: "" */))
 
 const emptyFn = () => {}
 
@@ -14,7 +19,7 @@ Vue.use(Router)
 export const routerOptions = {
   mode: 'history',
   base: '/',
-  linkActiveClass: 'nuxt-link-active',
+  linkActiveClass: 'active',
   linkExactActiveClass: 'nuxt-link-exact-active',
   scrollBehavior,
 
@@ -26,6 +31,30 @@ export const routerOptions = {
       path: "",
       component: _9f9125d2,
       name: "home"
+    }, {
+      path: "/login",
+      component: _53141a11,
+      name: "login"
+    }, {
+      path: "/register",
+      component: _53141a11,
+      name: "register"
+    }, {
+      path: "/profile",
+      component: _90c6ab5e,
+      name: "profile"
+    }, {
+      path: "/settings",
+      component: _658e9f0a,
+      name: "settings"
+    }, {
+      path: "/edit",
+      component: _4cfd4e62,
+      name: "edit"
+    }, {
+      path: "/article/:articleId",
+      component: _c33224c4,
+      name: "article"
     }]
   }],
 

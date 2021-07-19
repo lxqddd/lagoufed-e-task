@@ -6,7 +6,7 @@
         <ul class="nav navbar-nav pull-xs-right">
           <li class="nav-item">
             <!-- Add "active" class when you're on that page" -->
-            <a class="nav-link active" href="">Home</a>
+            <nuxt-link class="nav-link active" exact to="/" href="">Home</nuxt-link>
           </li>
           <li class="nav-item">
             <a class="nav-link" href=""> <i class="ion-compose"></i>&nbsp;New Post </a>
