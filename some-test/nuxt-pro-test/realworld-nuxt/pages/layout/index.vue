@@ -2,20 +2,36 @@
   <div class="default-layout">
     <nav class="navbar navbar-light">
       <div class="container">
-        <a class="navbar-brand" href="index.html">conduit</a>
+        <nuxt-link class="navbar-brand" to="/">conduit</nuxt-link>
         <ul class="nav navbar-nav pull-xs-right">
           <li class="nav-item">
             <!-- Add "active" class when you're on that page" -->
-            <nuxt-link class="nav-link active" exact to="/" href="">Home</nuxt-link>
+            <nuxt-link class="nav-link" exact to="/" href="">Home</nuxt-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href=""> <i class="ion-compose"></i>&nbsp;New Post </a>
+            <nuxt-link class="nav-link" to="/edit">
+              <i class="ion-compose"></i>&nbsp;New Post
+            </nuxt-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href=""> <i class="ion-gear-a"></i>&nbsp;Settings </a>
+            <nuxt-link class="nav-link" to="/settings">
+              <i class="ion-gear-a"></i>&nbsp;Settings
+            </nuxt-link>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="">Sign up</a>
+            <nuxt-link class="nav-link active" to="/profile">
+              <img
+                class="user-pic"
+                src="http://pic1.win4000.com/wallpaper/2019-09-30/5d91c2368fcc6.jpg"
+              />
+              ys
+            </nuxt-link>
+          </li>
+          <li class="nav-item">
+            <nuxt-link class="nav-link" to="/register">Sign up</nuxt-link>
+          </li>
+          <li class="nav-item">
+            <nuxt-link class="nav-link" to="/login">Sign in</nuxt-link>
           </li>
         </ul>
       </div>
@@ -23,10 +39,11 @@
     <nuxt-child />
     <footer>
       <div class="container">
-        <a href="/" class="logo-font">conduit</a>
+        <nuxt-link to="/" class="logo-font">conduit</nuxt-link>
         <span class="attribution">
-          An interactive learning project from <a href="https://thinkster.io">Thinkster</a>. Code
-          &amp; design licensed under MIT.
+          An interactive learning project from
+          <nuxt-link to="https://thinkster.io">Thinkster</nuxt-link>. Code &amp; design licensed
+          under MIT.
         </span>
       </div>
     </footer>
