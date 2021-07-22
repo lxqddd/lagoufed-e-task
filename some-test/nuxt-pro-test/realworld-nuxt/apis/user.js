@@ -1,9 +1,13 @@
 import fetch from '../utils/http'
 
-export const login = params => {
-  return fetch.post('/api/users/login', params)
+export const login = user => {
+  return fetch.post('/api/users/login', {
+    user
+  })
 }
 
-export const register = params => {
-  return fetch.post('/api/users', params)
+export const register = user => {
+  return fetch.post('/api/users', {
+    user
+  })
 }

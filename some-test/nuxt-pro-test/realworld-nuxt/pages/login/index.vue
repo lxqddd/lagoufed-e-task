@@ -15,7 +15,7 @@
           </ul>
 
           <form>
-            <fieldset class="form-group">
+            <fieldset class="form-group" v-if="!isLogin">
               <input
                 class="form-control form-control-lg"
                 type="text"
@@ -54,13 +54,11 @@
 
 <script>
 import { login, register } from '../../apis/user'
+import { mapMutations, mapState } from 'vuex'
+const Cookie = process.client ? require('js-cookie') : undefined
 export default {
   name: 'LoginIndex',
-  computed: {
-    isLogin() {
-      return this.$route.name === 'login'
-    }
-  },
+  middleware: 'notAuthenticated',
   data() {
     return {
       userForm: {
@@ -68,10 +66,18 @@ export default {
         email: '',
         password: ''
       },
-      errors: {}
+      errors: []
     }
   },
-  created() {},
+  created() {
+    console.log(this.user)
+  },
+  computed: {
+    ...mapState(['user']),
+    isLogin() {
+      return this.$route.name === 'login'
+    }
+  },
   methods: {
     async handLoginOrRegister() {
       const params = {
@@ -88,19 +94,37 @@ export default {
 
     async handleLogin(params) {
       delete params.username
-      const res = await login(params)
-      console.log(res)
+      try {
+        const res = await login(params)
+        this.$store.commit('setUser', res)
+        console.log(res)
+      } catch (error) {
+        this.errors = []
+        const errors = error['errors']
+        this.handleErrors(errors)
+      }
     },
 
     async handleRegister(params) {
       try {
         const res = await register(params)
-        console.log(res)
+        this.$store.commit('setUser', res)
       } catch (error) {
-        this.errors = error
-        console.dir(error)
+        this.errors = []
+        const errors = error['errors']
+        this.handleErrors(errors)
       }
-    }
+    },
+
+    handleErrors(errors) {
+      for (const key in errors) {
+        errors[key].forEach(item => {
+          this.errors.push(key + ' ' + item)
+        })
+      }
+    },
+
+    ...mapMutations(['setUser'])
   }
 }
 </script>
