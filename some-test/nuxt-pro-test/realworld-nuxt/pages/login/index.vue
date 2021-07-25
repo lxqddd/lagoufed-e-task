@@ -69,9 +69,6 @@ export default {
       errors: []
     }
   },
-  created() {
-    console.log(this.user)
-  },
   computed: {
     ...mapState(['user']),
     isLogin() {
@@ -95,10 +92,12 @@ export default {
     async handleLogin(params) {
       delete params.username
       try {
-        const res = await login(params)
-        this.$store.commit('setUser', res)
-        console.log(res)
+        const { user } = await login(params)
+        this.$store.commit('setUser', user)
+        Cookie.set('auth', user)
+        this.$router.push('/')
       } catch (error) {
+        console.error(error)
         this.errors = []
         const errors = error['errors']
         this.handleErrors(errors)
@@ -107,9 +106,12 @@ export default {
 
     async handleRegister(params) {
       try {
-        const res = await register(params)
-        this.$store.commit('setUser', res)
+        const { user } = await register(params)
+        Cookie.set('auth', user)
+        this.$store.commit('setUser', user)
+        this.$router.push('/')
       } catch (error) {
+        console.error(error)
         this.errors = []
         const errors = error['errors']
         this.handleErrors(errors)
@@ -124,7 +126,7 @@ export default {
       }
     },
 
-    ...mapMutations(['setUser'])
+    ...mapMutations(['setAuth'])
   }
 }
 </script>

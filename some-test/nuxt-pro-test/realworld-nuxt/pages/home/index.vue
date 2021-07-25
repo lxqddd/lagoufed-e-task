@@ -23,7 +23,9 @@
 
           <div class="article-preview">
             <div class="article-meta">
-              <a href="profile.html"><img src="http://i.imgur.com/Qr71crq.jpg"/></a>
+              <a href="profile.html"
+                ><img src="http://pic1.win4000.com/wallpaper/2019-09-30/5d91c2368fcc6.jpg"
+              /></a>
               <div class="info">
                 <a href="" class="author">Eric Simons</a>
                 <span class="date">January 20th</span>
@@ -41,7 +43,9 @@
 
           <div class="article-preview">
             <div class="article-meta">
-              <a href="profile.html"><img src="http://i.imgur.com/N4VcUeJ.jpg"/></a>
+              <a href="profile.html"
+                ><img src="http://pic1.win4000.com/wallpaper/2019-09-30/5d91c2368fcc6.jpg"
+              /></a>
               <div class="info">
                 <a href="" class="author">Albert Pai</a>
                 <span class="date">January 20th</span>
