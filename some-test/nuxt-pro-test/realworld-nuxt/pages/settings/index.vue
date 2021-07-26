@@ -53,7 +53,7 @@
             </fieldset>
           </form>
           <hr />
-          <button class="btn btn-outline-danger" ng-click="$ctrl.logout()">
+          <button class="btn btn-outline-danger" @click.prevent="handleLogout">
             Or click here to logout.
           </button>
         </div>
@@ -65,6 +65,7 @@
 <script>
 import { mapState } from 'vuex'
 import { settingsUser } from '../../apis/user.js'
+const Cookie = process.client ? require('js-cookie') : undefined
 export default {
   name: 'Settings',
   data() {
@@ -74,7 +75,6 @@ export default {
   },
   created() {
     this.userEdit = Object.assign({}, this.user)
-    console.log(this.userEdit)
   },
   computed: {
     ...mapState(['user'])
@@ -83,11 +83,19 @@ export default {
   methods: {
     async handleSettings() {
       try {
-        const res = await settingsUser(this.userEdit)
-        console.log(res)
+        const { user } = await settingsUser(this.userEdit)
+        this.$store.commit('setUser', user)
+        Cookie.set('auth', user)
+        this.$router.push('/')
       } catch (error) {
         console.error(error)
       }
+    },
+
+    handleLogout() {
+      this.$store.commit('setUser', {})
+      Cookie.remove('auth')
+      this.$router.push('/')
     }
   }
 }
