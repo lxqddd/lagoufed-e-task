@@ -13,10 +13,24 @@
           <div class="feed-toggle">
             <ul class="nav nav-pills outline-active">
               <li class="nav-item">
-                <a class="nav-link disabled" href="">Your Feed</a>
+                <nuxt-link
+                  class="nav-link"
+                  :to="{
+                    name: 'home',
+                    params: 'feed'
+                  }"
+                  >Your Feed</nuxt-link
+                >
               </li>
               <li class="nav-item">
-                <a class="nav-link active" href="">Global Feed</a>
+                <nuxt-link
+                  class="nav-link active"
+                  :to="{
+                    name: 'home',
+                    params: 'global'
+                  }"
+                  >Global Feed</nuxt-link
+                >
               </li>
             </ul>
           </div>
@@ -83,20 +97,50 @@
 </template>
 
 <script>
-import { getTags } from '../../apis/article'
+import { getTags, getGlobalFeedArticle } from '../../apis/article'
+
+const getTagList = async () => {
+  try {
+    const { tags } = await getTags()
+    return tags
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+const getGlobalFeedArticleList = async (offset = 0, limit = 10) => {
+  try {
+    const { articles, articlesCount } = await getGlobalFeedArticle({
+      limit,
+      offset
+    })
+    return {
+      articles,
+      articlesCount
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export default {
   name: 'HomeIndex',
   async asyncData() {
-    let tags
-    try {
-      const res = await getTags()
-      tags = res.tags
-    } catch (error) {
-      console.error(error)
-    }
+    // 获取文章标签列表
+    const tags = await getTagList()
+
+    // 获取文章列表
+    const { articles, articlesCount } = await getGlobalFeedArticleList(0, 10)
     return {
-      tags
+      tags,
+      articlesCount,
+      articles
     }
+  },
+
+  created() {
+    console.log(this.articles)
+    console.log(this.articlesCount)
   }
 }
 </script>

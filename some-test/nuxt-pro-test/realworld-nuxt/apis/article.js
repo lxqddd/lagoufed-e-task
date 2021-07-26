@@ -26,7 +26,7 @@ export const newArticle = article => {
 /**
  * 获取所有的文章列表
  * @typedef { ArticleList } params
- * @property { Number } limit 当前页数
+ * @property { Number } limit 步长
  * @property { Number } offset 每页多少条
  * @returns
  */
