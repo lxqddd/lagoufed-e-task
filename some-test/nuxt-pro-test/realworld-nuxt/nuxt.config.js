@@ -47,5 +47,5 @@ module.exports = {
       })
     }
   },
-  plugins: ['~/plugins/http.js']
+  plugins: ['~/plugins/http.js', '~/plugins/dayjs.js']
 }

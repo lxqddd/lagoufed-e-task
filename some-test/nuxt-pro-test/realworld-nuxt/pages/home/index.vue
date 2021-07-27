@@ -12,82 +12,73 @@
         <div class="col-md-9">
           <div class="feed-toggle">
             <ul class="nav nav-pills outline-active">
-              <li class="nav-item">
-                <nuxt-link
-                  class="nav-link"
-                  :to="{
-                    name: 'home',
-                    params: 'feed'
-                  }"
-                  >Your Feed</nuxt-link
-                >
-              </li>
-              <li class="nav-item">
-                <nuxt-link
-                  class="nav-link active"
-                  :to="{
-                    name: 'home',
-                    params: 'global'
-                  }"
-                  >Global Feed</nuxt-link
-                >
+              <li
+                class="nav-item"
+                v-for="item in tabMap"
+                :key="item ? item : 'hello'"
+                @click="changeTab(item)"
+              >
+                <span class="nav-link" :class="curSelectTab === item && 'active'" v-if="item">{{
+                  item
+                }}</span>
               </li>
             </ul>
           </div>
 
-          <div class="article-preview">
+          <div class="article-preview" v-for="article in articles" :key="article.slug">
             <div class="article-meta">
-              <a href="profile.html"
-                ><img src="http://pic1.win4000.com/wallpaper/2019-09-30/5d91c2368fcc6.jpg"
-              /></a>
+              <a href="profile.html"><img :src="article.author.image"/></a>
               <div class="info">
-                <a href="" class="author">Eric Simons</a>
-                <span class="date">January 20th</span>
+                <a href="" class="author">{{ article.author.username }}</a>
+                <span class="date">{{ article.createdAt | date('MMM dd,YYYY') }}</span>
               </div>
               <button class="btn btn-outline-primary btn-sm pull-xs-right">
                 <i class="ion-heart"></i> 29
               </button>
             </div>
             <a href="" class="preview-link">
-              <h1>How to build webapps that scale</h1>
-              <p>This is the description for the post.</p>
-              <span>Read more...</span>
-            </a>
-          </div>
-
-          <div class="article-preview">
-            <div class="article-meta">
-              <a href="profile.html"
-                ><img src="http://pic1.win4000.com/wallpaper/2019-09-30/5d91c2368fcc6.jpg"
-              /></a>
-              <div class="info">
-                <a href="" class="author">Albert Pai</a>
-                <span class="date">January 20th</span>
-              </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                <i class="ion-heart"></i> 32
-              </button>
-            </div>
-            <a href="" class="preview-link">
-              <h1>The song you won't ever stop singing. No matter how hard you try.</h1>
-              <p>This is the description for the post.</p>
+              <h1>{{ article.title }}</h1>
+              <p>{{ article.description }}</p>
               <span>Read more...</span>
             </a>
           </div>
         </div>
+        <div
+          total-pages="$ctrl.listConfig.totalPages"
+          current-page="$ctrl.listConfig.currentPage"
+          ng-hide="$ctrl.listConfig.totalPages <= 1"
+          class="ng-isolate-scope"
+        >
+          <nav>
+            <ul class="pagination">
+              <!-- ngRepeat: pageNumber in $ctrl.pageRange($ctrl.totalPages) -->
+              <li class="page-item active">
+                <a class="page-link ng-binding" href="">1</a>
+              </li>
+              <!-- end ngRepeat: pageNumber in $ctrl.pageRange($ctrl.totalPages) -->
+            </ul>
+          </nav>
+        </div>
+        <Pagination
+          @setPage="setPage"
+          @setOffset="setOffset"
+          :pageSize="pageSize"
+          :total="totalPages"
+          :curPage="curPage"
+        />
 
         <div class="col-md-3">
           <div class="sidebar">
             <p>Popular Tags</p>
-
             <div class="tag-list">
               <nuxt-link
                 to="/"
                 class="tag-pill tag-default"
                 v-for="(tag, index) in tags"
                 :key="index"
-                >{{ tag }}</nuxt-link
               >
+                <span @click="handleSelectTag(tag)">{{ tag }}</span>
+              </nuxt-link>
             </div>
           </div>
         </div>
@@ -98,6 +89,7 @@
 
 <script>
 import { getTags, getGlobalFeedArticle } from '../../apis/article'
+import Pagination from '../../components/Pagination'
 
 const getTagList = async () => {
   try {
@@ -125,6 +117,9 @@ const getGlobalFeedArticleList = async (offset = 0, limit = 10) => {
 
 export default {
   name: 'HomeIndex',
+  components: {
+    Pagination
+  },
   async asyncData() {
     // 获取文章标签列表
     const tags = await getTagList()
@@ -138,9 +133,39 @@ export default {
     }
   },
 
+  data() {
+    return {
+      tabMap: {
+        your: 'Your Feed',
+        global: 'Global Feed',
+        dynamic: ''
+      },
+      curSelectTab: 'Global Feed',
+      curPage: 1,
+      pageSize: 10,
+      totalPages: 0
+    }
+  },
+
   created() {
-    console.log(this.articles)
-    console.log(this.articlesCount)
+    this.totalPages = this.articlesCount / this.pageSize
+  },
+
+  methods: {
+    changeTab(tab) {
+      this.curSelectTab = tab
+    },
+    handleSelectTag(tag) {
+      this.tabMap.dynamic = tag
+      this.curSelectTab = tag
+    },
+    setPage(page) {
+      this.curPage = page
+    },
+    async setOffset(offset) {
+      this.pageSize = offset
+      await getGlobalFeedArticleList(1, this.pageSize)
+    }
   }
 }
 </script>
