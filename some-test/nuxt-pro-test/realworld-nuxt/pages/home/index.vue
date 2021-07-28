@@ -24,7 +24,6 @@
               </li>
             </ul>
           </div>
-
           <div class="article-preview" v-for="article in articles" :key="article.slug">
             <div class="article-meta">
               <a href="profile.html"><img :src="article.author.image"/></a>
@@ -33,7 +32,7 @@
                 <span class="date">{{ article.createdAt | date('MMM dd,YYYY') }}</span>
               </div>
               <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                <i class="ion-heart"></i> 29
+                <i class="ion-heart"></i> {{ article.favoritesCount }}
               </button>
             </div>
             <a href="" class="preview-link">
@@ -42,30 +41,16 @@
               <span>Read more...</span>
             </a>
           </div>
+          <div>
+            <Pagination
+              @setPage="setPage"
+              @setOffset="setOffset"
+              :pageSize="pageSize"
+              :total="totalPages"
+              :curPage="curPage"
+            />
+          </div>
         </div>
-        <div
-          total-pages="$ctrl.listConfig.totalPages"
-          current-page="$ctrl.listConfig.currentPage"
-          ng-hide="$ctrl.listConfig.totalPages <= 1"
-          class="ng-isolate-scope"
-        >
-          <nav>
-            <ul class="pagination">
-              <!-- ngRepeat: pageNumber in $ctrl.pageRange($ctrl.totalPages) -->
-              <li class="page-item active">
-                <a class="page-link ng-binding" href="">1</a>
-              </li>
-              <!-- end ngRepeat: pageNumber in $ctrl.pageRange($ctrl.totalPages) -->
-            </ul>
-          </nav>
-        </div>
-        <Pagination
-          @setPage="setPage"
-          @setOffset="setOffset"
-          :pageSize="pageSize"
-          :total="totalPages"
-          :curPage="curPage"
-        />
 
         <div class="col-md-3">
           <div class="sidebar">
@@ -88,7 +73,12 @@
 </template>
 
 <script>
-import { getTags, getGlobalFeedArticle } from '../../apis/article'
+import {
+  getTags,
+  getGlobalFeedArticle,
+  getYourFeedArticle,
+  getTagArticle
+} from '../../apis/article'
 import Pagination from '../../components/Pagination'
 
 const getTagList = async () => {
@@ -148,23 +138,80 @@ export default {
   },
 
   created() {
-    this.totalPages = this.articlesCount / this.pageSize
+    this.totalPages = Math.ceil(this.articlesCount / this.pageSize)
   },
 
   methods: {
-    changeTab(tab) {
+    async changeTab(tab) {
       this.curSelectTab = tab
+      if (tab === 'Your Feed' || tab === 'Global Feed') this.tabMap.dynamic = ''
+      await this.initArticlesOfTab(tab)
     },
-    handleSelectTag(tag) {
+
+    async handleSelectTag(tag) {
       this.tabMap.dynamic = tag
       this.curSelectTab = tag
+      await this.getTagArticle(1, this.pageSize, tag)
     },
-    setPage(page) {
+
+    async setPage(page) {
+      console.log(page)
       this.curPage = page
+      console.log(this.curSelectTab)
+      await this.initArticlesOfTab(this.curSelectTab, this.curPage - 1)
     },
+
     async setOffset(offset) {
       this.pageSize = offset
-      await getGlobalFeedArticleList(1, this.pageSize)
+      this.curPage = 1
+      await this.initArticlesOfTab(this.curSelectTab, this.curPage - 1, this.pageSize)
+    },
+
+    async getYourFeedArticle(curPage, pageSize) {
+      try {
+        const { articles, articlesCount } = await getYourFeedArticle({
+          limit: pageSize,
+          offset: curPage
+        })
+        this.articles = articles
+        this.totalPages = Math.ceil(articlesCount / this.pageSize)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+
+    async getTagArticle(curPage, pageSize, tag) {
+      try {
+        const { articles, articlesCount } = await getTagArticle({
+          limit: pageSize,
+          offset: curPage,
+          tag: tag
+        })
+        this.articles = articles
+        this.totalPages = Math.ceil(articlesCount / this.pageSize)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+
+    async getGlobalFeedArticleList(curPage, pageSize) {
+      const { articles, articlesCount } = await getGlobalFeedArticleList(curPage, pageSize)
+      this.articles = articles
+      this.totalPages = Math.ceil(articlesCount / this.pageSize)
+    },
+
+    async initArticlesOfTab(tab, curPage = 0, pageSize = 10) {
+      switch (tab) {
+        case 'Global Feed':
+          await this.getGlobalFeedArticleList(curPage, pageSize)
+          break
+        case 'Your Feed':
+          await this.getYourFeedArticle(curPage, pageSize)
+          break
+        default:
+          await this.getTagArticle(curPage, pageSize, tab)
+          break
+      }
     }
   }
 }

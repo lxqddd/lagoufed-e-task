@@ -20,7 +20,7 @@
         <option value="100">100</option>
       </select>
     </div>
-    <span>{{ curPage }}/{{ total }}</span>
+    <span>{{ total && curPage }}/{{ total }}</span>
     <div class="goto">
       <input type="text" v-model="gotoPage" />
       <button class="btn btn-primary" style="margin-right: 4px;" v-on:click="gotoNextPage">

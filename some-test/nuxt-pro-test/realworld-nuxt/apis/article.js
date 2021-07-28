@@ -33,3 +33,26 @@ export const newArticle = article => {
 export const getGlobalFeedArticle = params => {
   return fetch.get(`api/articles?limit=${params.limit}&offset=${params.offset}`)
 }
+
+/**
+ * 获取你发表的文章列表
+ * @typedef { ArticleList } params
+ * @property { Number } limit 步长
+ * @property { Number } offset 每页多少条
+ * @returns
+ */
+export const getYourFeedArticle = params => {
+  return fetch.get(`/api/articles/feed?limit=${params.limit}&offset=${params.offset}`)
+}
+
+/**
+ * 获取标签文章列表
+ * @typedef { ArticleList } params
+ * @property { Number } limit 步长
+ * @property { Number } offset 每页多少条
+ * @property { String } tag 当前选中的标签
+ * @returns
+ */
+export const getTagArticle = params => {
+  return fetch.get(`api/articles?limit=${params.limit}&offset=${params.offset}&tag=${params.tag}`)
+}
