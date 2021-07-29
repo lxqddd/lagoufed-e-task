@@ -56,3 +56,21 @@ export const getYourFeedArticle = params => {
 export const getTagArticle = params => {
   return fetch.get(`api/articles?limit=${params.limit}&offset=${params.offset}&tag=${params.tag}`)
 }
+
+/**
+ * 点赞当前文章
+ * @param { String } articleSlug 文章的slug
+ * @returns
+ */
+export const favoriteArticle = articleSlug => {
+  return fetch.post(`/api/articles/${articleSlug}/favorite`)
+}
+
+/**
+ * 取消点赞当前文章
+ * @param { String } articleSlug 文章的slug
+ * @returns
+ */
+export const cancelFavoriteArticle = articleSlug => {
+  return fetch.delete(`/api/articles/${articleSlug}/favorite`)
+}

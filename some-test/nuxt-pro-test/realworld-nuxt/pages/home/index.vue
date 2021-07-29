@@ -29,9 +29,13 @@
               <a href="profile.html"><img :src="article.author.image"/></a>
               <div class="info">
                 <a href="" class="author">{{ article.author.username }}</a>
-                <span class="date">{{ article.createdAt | date('MMM dd,YYYY') }}</span>
+                <span class="date">{{ article.createdAt | date('MMM DD,YYYY') }}</span>
               </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right">
+              <button
+                class="btn btn-sm btn-outline-primary pull-xs-right"
+                :class="article.favorited ? 'active' : ''"
+                @click="handleOrCancelFavorite(article)"
+              >
                 <i class="ion-heart"></i> {{ article.favoritesCount }}
               </button>
             </div>
@@ -77,7 +81,9 @@ import {
   getTags,
   getGlobalFeedArticle,
   getYourFeedArticle,
-  getTagArticle
+  getTagArticle,
+  favoriteArticle,
+  cancelFavoriteArticle
 } from '../../apis/article'
 import Pagination from '../../components/Pagination'
 
@@ -133,7 +139,8 @@ export default {
       curSelectTab: 'Global Feed',
       curPage: 1,
       pageSize: 10,
-      totalPages: 0
+      totalPages: 0,
+      favoriteLock: true
     }
   },
 
@@ -141,21 +148,32 @@ export default {
     this.totalPages = Math.ceil(this.articlesCount / this.pageSize)
   },
 
+  computed: {
+    isLogin() {
+      return this.$store.state.user.token
+    }
+  },
+
   methods: {
     async changeTab(tab) {
+      if (!this.isLogin) {
+        return this.$router.push('/login')
+      }
       this.curSelectTab = tab
       if (tab === 'Your Feed' || tab === 'Global Feed') this.tabMap.dynamic = ''
       await this.initArticlesOfTab(tab)
     },
 
     async handleSelectTag(tag) {
+      if (!this.isLogin) {
+        return this.$router.push('/login')
+      }
       this.tabMap.dynamic = tag
       this.curSelectTab = tag
       await this.getTagArticle(1, this.pageSize, tag)
     },
 
     async setPage(page) {
-      console.log(page)
       this.curPage = page
       console.log(this.curSelectTab)
       await this.initArticlesOfTab(this.curSelectTab, this.curPage - 1)
@@ -212,9 +230,41 @@ export default {
           await this.getTagArticle(curPage, pageSize, tab)
           break
       }
+    },
+
+    async handleOrCancelFavorite(article) {
+      // 防止连续点击多次
+      if (!this.favoriteLock) {
+        this.favoriteLock = false
+        return
+      }
+      if (article.favorited) {
+        this.cancelFavoriteArticle(article.slug)
+        article.favorited = false
+        article.favoritesCount -= 1
+      } else {
+        await this.favoriteArticle(article.slug)
+        article.favorited = true
+        article.favoritesCount += 1
+      }
+      this.favoriteLock = true
+    },
+
+    async favoriteArticle(articleSlug) {
+      try {
+        favoriteArticle(articleSlug)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+
+    async cancelFavoriteArticle(articleSlug) {
+      try {
+        await cancelFavoriteArticle(articleSlug)
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }
 </script>
-
-<style></style>

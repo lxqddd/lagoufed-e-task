@@ -18,7 +18,6 @@ fetch.interceptors.response.use(
 export default ({ store }) => {
   fetch.interceptors.request.use(function(config) {
     const { user } = store.state
-    console.log(user, 'user')
     if (user.token) {
       config.headers.authorization = `Token ${user.token}`
     }
