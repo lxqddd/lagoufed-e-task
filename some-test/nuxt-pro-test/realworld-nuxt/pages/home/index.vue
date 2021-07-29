@@ -26,9 +26,13 @@
           </div>
           <div class="article-preview" v-for="article in articles" :key="article.slug">
             <div class="article-meta">
-              <a href="profile.html"><img :src="article.author.image"/></a>
+              <span @click="jumpToProfile(article.author.username)"
+                ><img :src="article.author.image"
+              /></span>
               <div class="info">
-                <a href="" class="author">{{ article.author.username }}</a>
+                <span class="author" @click="jumpToProfile(article.author.username)">{{
+                  article.author.username
+                }}</span>
                 <span class="date">{{ article.createdAt | date('MMM DD,YYYY') }}</span>
               </div>
               <button
@@ -264,6 +268,15 @@ export default {
       } catch (error) {
         console.error(error)
       }
+    },
+
+    jumpToProfile(username) {
+      this.$router.push({
+        path: '/profile',
+        query: {
+          username
+        }
+      })
     }
   }
 }

@@ -4,18 +4,19 @@
       <div class="container">
         <div class="row">
           <div class="col-xs-12 col-md-10 offset-md-1">
-            <img
-              src="https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
-              class="user-img"
-            />
-            <h4>Eric Simons</h4>
+            <img :src="profileUserInfo.image" class="user-img" />
+            <h4>{{ profileUserInfo.username }}</h4>
             <p>
-              Cofounder @GoThinkster, lived in Aol's HQ for a few months, kinda looks like Peeta
-              from the Hunger Games
+              {{ profileUserInfo.bio }}
             </p>
             <button class="btn btn-sm btn-outline-secondary action-btn">
               <i class="ion-plus-round"></i>
-              &nbsp; Follow Eric Simons
+              &nbsp;
+              {{
+                profileUserInfo.following
+                  ? `Unfollow ${profileUserInfo.username}`
+                  : `Follow ${profileUserInfo.username}`
+              }}
             </button>
           </div>
         </div>
@@ -84,8 +85,29 @@
 </template>
 
 <script>
+import { getProfileUserInfo } from '../../apis/profile'
 export default {
-  name: 'UserProfile'
+  name: 'UserProfile',
+  data() {
+    return {
+      profileUserInfo: {}
+    }
+  },
+  created() {
+    this.getProfileUserInfo()
+  },
+
+  methods: {
+    async getProfileUserInfo() {
+      try {
+        const { profile } = await getProfileUserInfo(this.$route.query.username)
+        this.profileUserInfo = profile
+        console.log(this.profileUserInfo)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
 }
 </script>
 
