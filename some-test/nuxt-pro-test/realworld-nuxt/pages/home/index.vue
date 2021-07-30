@@ -26,9 +26,9 @@
           </div>
           <div class="article-preview" v-for="article in articles" :key="article.slug">
             <div class="article-meta">
-              <span @click="jumpToProfile(article.author.username)"
-                ><img :src="article.author.image"
-              /></span>
+              <span @click="jumpToProfile(article.author.username)">
+                <img :src="article.author.image" />
+              </span>
               <div class="info">
                 <span class="author" @click="jumpToProfile(article.author.username)">{{
                   article.author.username
@@ -43,11 +43,11 @@
                 <i class="ion-heart"></i> {{ article.favoritesCount }}
               </button>
             </div>
-            <a href="" class="preview-link">
+            <div class="preview-link" @click="handlePreviewArticle(article)">
               <h1>{{ article.title }}</h1>
               <p>{{ article.description }}</p>
               <span>Read more...</span>
-            </a>
+            </div>
           </div>
           <div>
             <Pagination
@@ -277,6 +277,11 @@ export default {
           username
         }
       })
+    },
+
+    // TODO 预览文章
+    handlePreviewArticle(article) {
+      console.log(article)
     }
   }
 }
