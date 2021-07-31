@@ -9,21 +9,6 @@ export const getProfileUserInfo = username => {
 }
 
 /**
- * 发布一篇新的文章
- * @typedef { Article } article
- * @property { String } body 内容
- * @property { String } title 标题
- * @property { String } description 描述内容
- * @property { Array } tagList 标签列表
- * @returns
- */
-export const newArticle = article => {
-  return fetch.post('api/articles', {
-    article
-  })
-}
-
-/**
  * 关注该用户
  * @param { String } username 用户名称
  */
@@ -37,4 +22,32 @@ export const followProfile = username => {
  */
 export const cancelFollowProfile = username => {
   return fetch.delete(`api/profiles/${username}/follow`)
+}
+
+/**
+ * 获取我的文章列表
+ * @typedef { ParamsType } params
+ * @property { String } authorName 作者名称
+ * @property { Number } pageSize 步长
+ * @property { Number } offset 偏移量
+ * @returns
+ */
+export const getMyArticles = params => {
+  return fetch.get(
+    `api/articles?author=${params.authorName}&limit=${params.pageSize}&offset=${params.offset}`
+  )
+}
+
+/**
+ * 获取我喜欢的文章列表
+ * @typedef { ParamsType } params
+ * @property { String } username 作者名称
+ * @property { Number } pageSize 步长
+ * @property { Number } offset 偏移量
+ * @returns
+ */
+export const getMyFavoArticles = params => {
+  return fetch.get(
+    `api/articles?favorited=${params.username}&limit=${params.pageSize}&offset=${params.offset}`
+  )
 }

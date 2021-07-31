@@ -31,12 +31,18 @@
         <div class="col-xs-12 col-md-10 offset-md-1">
           <div class="articles-toggle">
             <ul class="nav nav-pills outline-active">
-              <li class="nav-item">
+              <li class="nav-item" v-for="item in tabMap" :key="item" @click="changeTab(item)">
+                <span class="nav-link" :class="curSelectTab === item && 'active'" v-if="item">{{
+                  item
+                }}</span>
+              </li>
+
+              <!-- <li class="nav-item">
                 <a class="nav-link active" href="">My Articles</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="">Favorited Articles</a>
-              </li>
+              </li> -->
             </ul>
           </div>
 
@@ -88,13 +94,24 @@
 </template>
 
 <script>
-import { getProfileUserInfo, followProfile, cancelFollowProfile } from '../../apis/profile'
+import {
+  getProfileUserInfo,
+  followProfile,
+  cancelFollowProfile,
+  getMyArticles,
+  getMyFavoArticles
+} from '../../apis/profile'
 export default {
   name: 'UserProfile',
+  middleware: 'authenticated',
   data() {
     return {
       profileUserInfo: {},
-      followLock: true
+      followLock: true,
+      tabOptions: {
+        my: 'My Articles',
+        favo: 'Favorited Articles'
+      }
     }
   },
   created() {
@@ -131,6 +148,40 @@ export default {
         console.error(error)
       }
       this.followLock = true
+    },
+
+    async changeTab(tab) {
+      this.curSelectTab = tab
+      await this.initArticlesOfTab(tab)
+    },
+
+    async initArticlesOfTab(tab, curPage = 0, pageSize = 10) {
+      switch (tab) {
+        case 'My Articles':
+          await this.getMyArticles(curPage, pageSize)
+          break
+        case 'Favorited Articles':
+          await this.getFavoArticle(curPage, pageSize)
+          break
+      }
+    },
+
+    async getMyArticles() {
+      try {
+        const res = await getMyArticles()
+        console.log(res)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+
+    async getFavoArticle() {
+      try {
+        const res = await getMyFavoArticles()
+        console.log(res)
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }
