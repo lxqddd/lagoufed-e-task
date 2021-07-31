@@ -22,3 +22,19 @@ export const newArticle = article => {
     article
   })
 }
+
+/**
+ * 关注该用户
+ * @param { String } username 用户名称
+ */
+export const followProfile = username => {
+  return fetch.post(`api/profiles/${username}/follow`)
+}
+
+/**
+ * 取消关注该用户
+ * @param { String } username 用户名称
+ */
+export const cancelFollowProfile = username => {
+  return fetch.delete(`api/profiles/${username}/follow`)
+}

@@ -9,7 +9,10 @@
             <p>
               {{ profileUserInfo.bio }}
             </p>
-            <button class="btn btn-sm btn-outline-secondary action-btn">
+            <button
+              class="btn btn-sm btn-outline-secondary action-btn"
+              @click="handleOrCancelFollow(profileUserInfo)"
+            >
               <i class="ion-plus-round"></i>
               &nbsp;
               {{
@@ -85,12 +88,13 @@
 </template>
 
 <script>
-import { getProfileUserInfo } from '../../apis/profile'
+import { getProfileUserInfo, followProfile, cancelFollowProfile } from '../../apis/profile'
 export default {
   name: 'UserProfile',
   data() {
     return {
-      profileUserInfo: {}
+      profileUserInfo: {},
+      followLock: true
     }
   },
   created() {
@@ -102,10 +106,31 @@ export default {
       try {
         const { profile } = await getProfileUserInfo(this.$route.query.username)
         this.profileUserInfo = profile
-        console.log(this.profileUserInfo)
       } catch (error) {
         console.log(error)
       }
+    },
+
+    async handleOrCancelFollow(userInfo) {
+      if (!this.followLock) {
+        this.followLock = false
+        return
+      }
+      const { following, username } = userInfo
+      try {
+        if (following) {
+          // 取消关注
+          await followProfile(username)
+          userInfo.following = false
+        } else {
+          // 添加关注
+          await cancelFollowProfile(username)
+          userInfo.following = true
+        }
+      } catch (error) {
+        console.error(error)
+      }
+      this.followLock = true
     }
   }
 }

@@ -25,29 +25,7 @@
             </ul>
           </div>
           <div class="article-preview" v-for="article in articles" :key="article.slug">
-            <div class="article-meta">
-              <span @click="jumpToProfile(article.author.username)">
-                <img :src="article.author.image" />
-              </span>
-              <div class="info">
-                <span class="author" @click="jumpToProfile(article.author.username)">{{
-                  article.author.username
-                }}</span>
-                <span class="date">{{ article.createdAt | date('MMM DD,YYYY') }}</span>
-              </div>
-              <button
-                class="btn btn-sm btn-outline-primary pull-xs-right"
-                :class="article.favorited ? 'active' : ''"
-                @click="handleOrCancelFavorite(article)"
-              >
-                <i class="ion-heart"></i> {{ article.favoritesCount }}
-              </button>
-            </div>
-            <div class="preview-link" @click="handlePreviewArticle(article)">
-              <h1>{{ article.title }}</h1>
-              <p>{{ article.description }}</p>
-              <span>Read more...</span>
-            </div>
+            <ArticleItem :article="article" />
           </div>
           <div>
             <Pagination
@@ -64,14 +42,13 @@
           <div class="sidebar">
             <p>Popular Tags</p>
             <div class="tag-list">
-              <nuxt-link
-                to="/"
-                class="tag-pill tag-default"
+              <span
                 v-for="(tag, index) in tags"
                 :key="index"
+                class="tag-pill tag-default"
+                @click="handleSelectTag(tag)"
+                >{{ tag }}</span
               >
-                <span @click="handleSelectTag(tag)">{{ tag }}</span>
-              </nuxt-link>
             </div>
           </div>
         </div>
@@ -85,11 +62,10 @@ import {
   getTags,
   getGlobalFeedArticle,
   getYourFeedArticle,
-  getTagArticle,
-  favoriteArticle,
-  cancelFavoriteArticle
+  getTagArticle
 } from '../../apis/article'
 import Pagination from '../../components/Pagination'
+import ArticleItem from './components/ArticleItem.vue'
 
 const getTagList = async () => {
   try {
@@ -118,7 +94,8 @@ const getGlobalFeedArticleList = async (offset = 0, limit = 10) => {
 export default {
   name: 'HomeIndex',
   components: {
-    Pagination
+    Pagination,
+    ArticleItem
   },
   async asyncData() {
     // 获取文章标签列表
@@ -234,54 +211,6 @@ export default {
           await this.getTagArticle(curPage, pageSize, tab)
           break
       }
-    },
-
-    async handleOrCancelFavorite(article) {
-      // 防止连续点击多次
-      if (!this.favoriteLock) {
-        this.favoriteLock = false
-        return
-      }
-      if (article.favorited) {
-        this.cancelFavoriteArticle(article.slug)
-        article.favorited = false
-        article.favoritesCount -= 1
-      } else {
-        await this.favoriteArticle(article.slug)
-        article.favorited = true
-        article.favoritesCount += 1
-      }
-      this.favoriteLock = true
-    },
-
-    async favoriteArticle(articleSlug) {
-      try {
-        favoriteArticle(articleSlug)
-      } catch (error) {
-        console.error(error)
-      }
-    },
-
-    async cancelFavoriteArticle(articleSlug) {
-      try {
-        await cancelFavoriteArticle(articleSlug)
-      } catch (error) {
-        console.error(error)
-      }
-    },
-
-    jumpToProfile(username) {
-      this.$router.push({
-        path: '/profile',
-        query: {
-          username
-        }
-      })
-    },
-
-    // TODO 预览文章
-    handlePreviewArticle(article) {
-      console.log(article)
     }
   }
 }
