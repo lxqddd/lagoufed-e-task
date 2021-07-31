@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { favoriteArticle, cancelFavoriteArticle } from '../../../apis/article'
+import { favoriteArticle, cancelFavoriteArticle } from '../../apis/article'
 export default {
   name: 'ArticleItem',
   props: {

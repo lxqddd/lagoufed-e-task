@@ -65,7 +65,7 @@ import {
   getTagArticle
 } from '../../apis/article'
 import Pagination from '../../components/Pagination'
-import ArticleItem from './components/ArticleItem.vue'
+import ArticleItem from '../../components/ArticleItem/ArticleItem.vue'
 
 const getTagList = async () => {
   try {
