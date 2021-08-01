@@ -65,29 +65,14 @@
               <span>Read more...</span>
             </a>
           </div>
-
-          <div class="article-preview">
-            <div class="article-meta">
-              <a href=""><img src="http://i.imgur.com/N4VcUeJ.jpg"/></a>
-              <div class="info">
-                <a href="" class="author">Albert Pai</a>
-                <span class="date">January 20th</span>
-              </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                <i class="ion-heart"></i> 32
-              </button>
-            </div>
-            <a href="" class="preview-link">
-              <h1>The song you won't ever stop singing. No matter how hard you try.</h1>
-              <p>This is the description for the post.</p>
-              <span>Read more...</span>
-              <ul class="tag-list">
-                <li class="tag-default tag-pill tag-outline">Music</li>
-                <li class="tag-default tag-pill tag-outline">Song</li>
-              </ul>
-            </a>
-          </div>
         </div>
+        <Pagination
+          @setPage="setPage"
+          @setOffset="setOffset"
+          :pageSize="pageSize"
+          :total="totalPages"
+          :curPage="curPage"
+        />
       </div>
     </div>
   </div>
@@ -101,21 +86,35 @@ import {
   getMyArticles,
   getMyFavoArticles
 } from '../../apis/profile'
+import Pagination from '../../components/Pagination'
 export default {
   name: 'UserProfile',
   middleware: 'authenticated',
+  components: {
+    Pagination
+  },
   data() {
     return {
       profileUserInfo: {},
       followLock: true,
-      tabOptions: {
+      tabMap: {
         my: 'My Articles',
         favo: 'Favorited Articles'
-      }
+      },
+      curSelectTab: 'My Articles',
+      articles: [],
+      articlesCount: 0,
+      curPage: 0,
+      pageSize: 10,
+      totalPages: 0
     }
   },
-  created() {
-    this.getProfileUserInfo()
+  async created() {
+    await this.getProfileUserInfo()
+    console.log(this.profileUserInfo)
+    await this.initArticlesOfTab('My Articles', this.profileUserInfo.username)
+    this.totalPages = Math.ceil(this.articles / this.pageSize)
+    console.log(this.totalPages)
   },
 
   methods: {
@@ -152,36 +151,55 @@ export default {
 
     async changeTab(tab) {
       this.curSelectTab = tab
-      await this.initArticlesOfTab(tab)
+      await this.initArticlesOfTab(tab, this.profileUserInfo.username)
     },
 
-    async initArticlesOfTab(tab, curPage = 0, pageSize = 10) {
+    async initArticlesOfTab(tab, authorName, curPage = 0, pageSize = 10) {
       switch (tab) {
         case 'My Articles':
-          await this.getMyArticles(curPage, pageSize)
+          await this.getMyArticles(authorName, curPage, pageSize)
           break
         case 'Favorited Articles':
-          await this.getFavoArticle(curPage, pageSize)
+          await this.getFavoArticle(authorName, curPage, pageSize)
           break
       }
+      this.totalPages = Math.ceil(this.articles / this.pageSize)
     },
 
-    async getMyArticles() {
+    async getMyArticles(authorName, curPage, pageSize) {
       try {
-        const res = await getMyArticles()
-        console.log(res)
+        const { articles, articlesCount } = await getMyArticles({ authorName, curPage, pageSize })
+        this.articles = articles
+        this.articlesCount = articlesCount
       } catch (error) {
         console.error(error)
       }
     },
 
-    async getFavoArticle() {
+    async getFavoArticle(authorName, curPage, pageSize) {
       try {
-        const res = await getMyFavoArticles()
-        console.log(res)
+        const { articles, articlesCount } = await getMyFavoArticles({
+          username: authorName,
+          curPage,
+          pageSize
+        })
+        this.articles = articles
+        this.articlesCount = articlesCount
       } catch (error) {
         console.error(error)
       }
+    },
+
+    async setPage(page) {
+      this.curPage = page
+      console.log(this.curSelectTab)
+      await this.initArticlesOfTab(this.curSelectTab, this.curPage - 1)
+    },
+
+    async setOffset(offset) {
+      this.pageSize = offset
+      this.curPage = 1
+      await this.initArticlesOfTab(this.curSelectTab, this.curPage - 1, this.pageSize)
     }
   }
 }
