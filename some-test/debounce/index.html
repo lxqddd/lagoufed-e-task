@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>防抖</title>
+  </head>
+  <body>
+    <div id="app">
+      <button class="btn">点我</button>
+    </div>
+    <script>
+      const btn = document.getElementsByClassName('btn')[0]
+
+      /*
+       * 防抖函数
+       * @param { Function } handleFn  处理函数
+       * @param { Number } wait 延迟执行事件
+       * @param { Boolean } immediate 判断是执行处理函数第一次还是最后一次，false为最后一次
+       * @return { Function } proxy 事件代理函数
+       */
+      function myDebounce(handleFn, wait, immediate) {
+        if (typeof handleFn !== 'function') {
+          throw new Error('handleFn must be an function')
+        }
+        if (typeof wait === 'undefined') {
+          wait = 300
+        }
+        if (typeof wait === 'boolean') {
+          immediate = wait
+          wait = 300
+        }
+        if (typeof immediate !== 'boolean') {
+          immediate = false
+        }
+        let timer = null
+
+        return function proxy(...args) {
+          const self = this
+          let init = immediate && !timer
+          clearTimeout(timer)
+          timer = setTimeout(() => {
+            timer = null
+            !immediate ? handleFn.call(self, ...args) : null
+          }, wait)
+          console.log(init)
+          init ? handleFn.call(self, ...args) : null
+        }
+      }
+      function handleClick(e) {
+        console.log('btn handle click')
+      }
+      btn.addEventListener('click', myDebounce(handleClick, 1000, false))
+    </script>
+  </body>
+</html>
