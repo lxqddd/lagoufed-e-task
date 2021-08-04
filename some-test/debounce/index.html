@@ -24,13 +24,18 @@
         if (typeof handleFn !== 'function') {
           throw new Error('handleFn must be an function')
         }
+        // 默认市场给300ms
         if (typeof wait === 'undefined') {
           wait = 300
         }
+        // 如果wait的类型是布尔，说明wait没有传值，wait的位置穿的是immediate
+        // 此时应该把wait的值还给immediate，并且给wait赋一个初始值
         if (typeof wait === 'boolean') {
           immediate = wait
           wait = 300
         }
+        // 如果immediate的值不是布尔，说明immediate没有传值，或是传值类型不对
+        // 这里手动给它一个初始值false，代表执行最后一次操作
         if (typeof immediate !== 'boolean') {
           immediate = false
         }
@@ -39,12 +44,14 @@
         return function proxy(...args) {
           const self = this
           let init = immediate && !timer
+          // 第二次触发处理函数的时候会把之前的定时器清空掉，重新创建一个新的定时器
           clearTimeout(timer)
           timer = setTimeout(() => {
             timer = null
             !immediate ? handleFn.call(self, ...args) : null
           }, wait)
           console.log(init)
+          // 如果immediate的值是true，说明要立即执行第一次操作
           init ? handleFn.call(self, ...args) : null
         }
       }
