@@ -14,9 +14,9 @@
       const btn = document.getElementsByClassName('btn')[0]
 
       /*
-       * 防抖函数
+       * 函数防抖
        * @param { Function } handleFn  处理函数
-       * @param { Number } wait 延迟执行事件
+       * @param { Number } wait 延迟执行时间
        * @param { Boolean } immediate 判断是执行处理函数第一次还是最后一次，false为最后一次
        * @return { Function } proxy 事件代理函数
        */
@@ -24,7 +24,7 @@
         if (typeof handleFn !== 'function') {
           throw new Error('handleFn must be an function')
         }
-        // 默认市场给300ms
+        // 默认时长给300ms
         if (typeof wait === 'undefined') {
           wait = 300
         }
