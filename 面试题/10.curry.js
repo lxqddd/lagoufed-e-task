@@ -14,7 +14,6 @@ function currying(fn) {
     } else {
       // 所有最后一次没有传参数，代表要调用该函数了
       let val = fn.apply(this, args)
-      console.log('hello', val)
       args = []
       return val
     }
@@ -24,3 +23,12 @@ function currying(fn) {
 const addCurry = currying(add)
 
 console.log(addCurry(1)(2)(3)(4)(5)())
+
+const person = [{ name: 'kevin' }, { name: 'daisy' }]
+
+const prop = currying(function (key, obj) {
+  return obj[key]
+})
+
+const names = person.map(prop('name')())
+console.log(names)
